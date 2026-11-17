@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TeamForge — Multi-User Project Management SaaS</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- AUTH / LOGIN VIEW -->
+  <section class="auth-wrapper" id="authView">
+    <div class="auth-glow"></div>
+    <div class="auth-card">
+      <div class="brand-row">
+        <div class="brand-logo">TF</div>
+        <div>
+          <h1>TeamForge</h1>
+          <p>Multi-Tenant Project Management SaaS</p>
+        </div>
+      </div>
+
+      <form id="loginForm" class="auth-form">
+        <div class="form-group">
+          <label for="loginEmail">Work Email</label>
+          <input type="email" id="loginEmail" required placeholder="ali@alpha.io">
+        </div>
+        <div class="form-group">
+          <label for="loginPassword">Password</label>
+          <input type="password" id="loginPassword" required placeholder="Password123!">
+        </div>
+        <div class="error-banner hidden" id="loginError"></div>
+        <button type="submit" class="primary-btn">Sign In to Workspace</button>
+      </form>
+
+      <div class="demo-accounts">
+        <p class="demo-title">Quick-Fill Test Accounts (Password: <code>Password123!</code>)</p>
+        <div class="demo-chips">
+          <button type="button" class="chip-btn" onclick="fillDemo('ali@alpha.io')">👑 Ali (Alpha Owner)</button>
+          <button type="button" class="chip-btn" onclick="fillDemo('sara@alpha.io')">👤 Sara (Alpha Member)</button>
+          <button type="button" class="chip-btn" onclick="fillDemo('usman@beta.io')">👑 Usman (Beta Owner)</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MAIN WORKSPACE APP VIEW -->
+  <div class="app-shell hidden" id="appView">
+    <header class="topbar">
+      <div class="topbar-left">
+        <div class="brand-logo sm">TF</div>
+        <span class="topbar-title">TeamForge</span>
+        <span class="role-badge" id="activeRoleBadge">OWNER</span>
+      </div>
+      <div class="topbar-right">
+        <span class="session-pill">🟢 Authenticated Session</span>
+        <span class="user-info" id="currentUserLabel"></span>
+        <button class="secondary-btn" id="logoutBtn">Sign Out</button>
+      </div>
+    </header>
+
+    <div class="layout-grid">
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <div class="sidebar-section">
+          <h3>Your Workspaces</h3>
+          <div id="workspaceList" class="ws-list"></div>
+        </div>
+
+        <div class="sidebar-section">
+          <h4>Create Workspace</h4>
+          <form id="createWsForm" class="mini-form">
+            <input type="text" id="newWsName" placeholder="Workspace name..." required>
+            <button type="submit" class="primary-btn sm">+ Create</button>
+          </form>
+        </div>
+
+        <div class="sidebar-section">
+          <h4>Join via Invite Code</h4>
+          <form id="joinWsForm" class="mini-form">
+            <input type="text" id="joinInviteCode" placeholder="e.g. BETA-2026" required>
+            <button type="submit" class="secondary-btn sm">Join</button>
+          </form>
+        </div>
+      </aside>
+
+      <!-- Main Workspace -->
+      <main class="workspace-main">
+        <div class="ws-banner">
+          <div>
+            <div class="ws-eyebrow">ISOLATED TENANT WORKSPACE</div>
+            <h2 id="wsTitle">Select a Workspace</h2>
+            <p id="wsDesc"></p>
+          </div>
+          <div class="ws-meta">
+            <div class="invite-box">
+              <span>INVITE CODE</span>
+              <strong id="wsInviteCode">—</strong>
+            </div>
+            <div class="invite-box">
+              <span>MEMBERS</span>
+              <strong id="wsMembersCount">0</strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- Day 2 Tenant Isolation Security Check -->
+        <section class="security-card">
+          <div class="security-head">
+            <div>
+              <h3>🛡️ Day 2 Tenant Isolation Security Check</h3>
+              <p>Verify server-side authorization: attempts to fetch data from another workspace return <code>403 Forbidden</code>.</p>
+            </div>
+            <button class="danger-btn" id="testIsolationBtn">Test Cross-Workspace Access</button>
+          </div>
+          <pre class="test-output hidden" id="isolationOutput"></pre>
+        </section>
+
+        <!-- Projects & Tasks Split -->
+        <div class="content-split">
+          <section class="panel">
+            <div class="panel-head">
+              <h3>📁 Workspace Projects</h3>
+              <span class="count-pill" id="projectsCount">0</span>
+            </div>
+            <form id="createProjectForm" class="inline-form">
+              <input type="text" id="newProjName" placeholder="New project name..." required>
+              <button type="submit" class="primary-btn sm">+ Add Project</button>
+            </form>
+            <div id="projectsList" class="item-list"></div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-head">
+              <h3>✅ Workspace Tasks</h3>
+              <span class="count-pill" id="tasksCount">0</span>
+            </div>
+            <div id="tasksList" class="item-list"></div>
+          </section>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <div class="toast hidden" id="toast"></div>
+  <script src="app.js"></script>
+</body>
+</html>

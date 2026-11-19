@@ -9,7 +9,7 @@
 </head>
 <body>
 
-  <!-- AUTH / LOGIN VIEW -->
+  <!-- AUTH VIEW -->
   <section class="auth-wrapper" id="authView">
     <div class="auth-glow"></div>
     <div class="auth-card">
@@ -20,7 +20,6 @@
           <p>Multi-Tenant Project Management SaaS</p>
         </div>
       </div>
-
       <form id="loginForm" class="auth-form">
         <div class="form-group">
           <label for="loginEmail">Work Email</label>
@@ -33,7 +32,6 @@
         <div class="error-banner hidden" id="loginError"></div>
         <button type="submit" class="primary-btn">Sign In to Workspace</button>
       </form>
-
       <div class="demo-accounts">
         <p class="demo-title">Quick-Fill Test Accounts (Password: <code>Password123!</code>)</p>
         <div class="demo-chips">
@@ -45,7 +43,7 @@
     </div>
   </section>
 
-  <!-- MAIN WORKSPACE APP VIEW -->
+  <!-- MAIN WORKSPACE APP -->
   <div class="app-shell hidden" id="appView">
     <header class="topbar">
       <div class="topbar-left">
@@ -61,13 +59,11 @@
     </header>
 
     <div class="layout-grid">
-      <!-- Sidebar -->
       <aside class="sidebar">
         <div class="sidebar-section">
           <h3>Your Workspaces</h3>
           <div id="workspaceList" class="ws-list"></div>
         </div>
-
         <div class="sidebar-section">
           <h4>Create Workspace</h4>
           <form id="createWsForm" class="mini-form">
@@ -75,7 +71,6 @@
             <button type="submit" class="primary-btn sm">+ Create</button>
           </form>
         </div>
-
         <div class="sidebar-section">
           <h4>Join via Invite Code</h4>
           <form id="joinWsForm" class="mini-form">
@@ -85,8 +80,8 @@
         </div>
       </aside>
 
-      <!-- Main Workspace -->
       <main class="workspace-main">
+        <!-- Workspace Header -->
         <div class="ws-banner">
           <div>
             <div class="ws-eyebrow">ISOLATED TENANT WORKSPACE</div>
@@ -105,40 +100,106 @@
           </div>
         </div>
 
-        <!-- Day 2 Tenant Isolation Security Check -->
-        <section class="security-card">
-          <div class="security-head">
-            <div>
-              <h3>🛡️ Day 2 Tenant Isolation Security Check</h3>
-              <p>Verify server-side authorization: attempts to fetch data from another workspace return <code>403 Forbidden</code>.</p>
-            </div>
-            <button class="danger-btn" id="testIsolationBtn">Test Cross-Workspace Access</button>
+        <!-- Day 4: Database-Derived Dashboard Metrics & Workload -->
+        <section class="dashboard-grid">
+          <div class="stat-card">
+            <span class="stat-lbl">TOTAL PROJECTS</span>
+            <strong class="stat-val" id="dashProjects">0</strong>
           </div>
-          <pre class="test-output hidden" id="isolationOutput"></pre>
+          <div class="stat-card">
+            <span class="stat-lbl">TOTAL TASKS</span>
+            <strong class="stat-val" id="dashTasks">0</strong>
+          </div>
+          <div class="stat-card">
+            <span class="stat-lbl">IN PROGRESS</span>
+            <strong class="stat-val text-amber" id="dashInProgress">0</strong>
+          </div>
+          <div class="stat-card">
+            <span class="stat-lbl">COMPLETION RATE</span>
+            <strong class="stat-val text-green" id="dashCompletion">0%</strong>
+            <div class="progress-track"><div class="progress-fill" id="dashProgressBar" style="width:0%"></div></div>
+          </div>
         </section>
 
-        <!-- Projects & Tasks Split -->
+        <!-- Workload & Security Row -->
         <div class="content-split">
           <section class="panel">
             <div class="panel-head">
-              <h3>📁 Workspace Projects</h3>
-              <span class="count-pill" id="projectsCount">0</span>
+              <h3>📊 Team Workload (DB Derived)</h3>
             </div>
-            <form id="createProjectForm" class="inline-form">
-              <input type="text" id="newProjName" placeholder="New project name..." required>
-              <button type="submit" class="primary-btn sm">+ Add Project</button>
-            </form>
-            <div id="projectsList" class="item-list"></div>
+            <div id="workloadList" class="item-list"></div>
           </section>
 
           <section class="panel">
             <div class="panel-head">
-              <h3>✅ Workspace Tasks</h3>
-              <span class="count-pill" id="tasksCount">0</span>
+              <h3>🛡️ Tenant Isolation Check</h3>
+              <button class="danger-btn sm" id="testIsolationBtn">Test 403 Access</button>
             </div>
-            <div id="tasksList" class="item-list"></div>
+            <p style="font-size:0.83rem; color:var(--muted);">Verify server blocks cross-workspace data reads.</p>
+            <pre class="test-output hidden" id="isolationOutput"></pre>
           </section>
         </div>
+
+        <!-- Day 3: Projects Panel -->
+        <section class="panel">
+          <div class="panel-head">
+            <h3>📁 Workspace Projects</h3>
+            <span class="count-pill" id="projectsCount">0</span>
+          </div>
+          <form id="createProjectForm" class="inline-form">
+            <input type="text" id="newProjName" placeholder="Project name..." required>
+            <input type="text" id="newProjDesc" placeholder="Short description (optional)...">
+            <button type="submit" class="primary-btn sm">+ Add Project</button>
+          </form>
+          <div id="projectsList" class="projects-grid"></div>
+        </section>
+
+        <!-- Day 3: Task Engine (CRUD, Assignment, Priority, Due Date, Filters & Pagination) -->
+        <section class="panel">
+          <div class="panel-head">
+            <h3>✅ Task Engine</h3>
+            <div class="filter-bar">
+              <input type="text" id="filterSearch" placeholder="Search tasks..." class="filter-input">
+              <select id="filterStatus" class="filter-select">
+                <option value="">All Statuses</option>
+                <option value="Todo">Todo</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Done">Done</option>
+              </select>
+              <select id="filterPriority" class="filter-select">
+                <option value="">All Priorities</option>
+                <option value="High">High</option>
+                <option value="Medium">Medium</option>
+                <option value="Low">Low</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Create Task Form -->
+          <form id="createTaskForm" class="task-create-grid">
+            <input type="text" id="newTaskTitle" placeholder="New task title..." required>
+            <select id="newTaskProject" required></select>
+            <select id="newTaskPriority">
+              <option value="Medium">Medium Priority</option>
+              <option value="High">High Priority</option>
+              <option value="Low">Low Priority</option>
+            </select>
+            <select id="newTaskAssignee"></select>
+            <input type="date" id="newTaskDue">
+            <button type="submit" class="primary-btn sm">+ Add Task</button>
+          </form>
+
+          <div id="tasksList" class="item-list"></div>
+
+          <!-- Pagination -->
+          <div class="pagination-bar">
+            <span id="pageInfo" style="font-size:0.82rem; color:var(--muted);">Page 1 of 1</span>
+            <div style="display:flex; gap:0.5rem;">
+              <button class="secondary-btn sm" id="prevPageBtn">← Prev</button>
+              <button class="secondary-btn sm" id="nextPageBtn">Next →</button>
+            </div>
+          </div>
+        </section>
       </main>
     </div>
   </div>
